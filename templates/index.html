@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taskr — Task Manager</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">TASKR<span class="logo-dot">.</span></div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-filter="all">
+        <span class="nav-icon">◈</span> All Tasks
+        <span class="nav-count" id="count-all">0</span>
+      </button>
+      <button class="nav-item" data-filter="todo">
+        <span class="nav-icon">○</span> To Do
+        <span class="nav-count" id="count-todo">0</span>
+      </button>
+      <button class="nav-item" data-filter="in_progress">
+        <span class="nav-icon">◑</span> In Progress
+        <span class="nav-count" id="count-in_progress">0</span>
+      </button>
+      <button class="nav-item" data-filter="done">
+        <span class="nav-icon">●</span> Done
+        <span class="nav-count" id="count-done">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-section">
+      <div class="section-label">CATEGORIES</div>
+      <div id="category-list"></div>
+      <button class="add-category-btn" id="openCategoryModal">+ New category</button>
+    </div>
+
+    <div class="sidebar-stats">
+      <div class="section-label">BY PRIORITY</div>
+      <div class="stat-row">
+        <span>Urgent</span>
+        <span id="stat-urgent" class="stat-val urgent">0</span>
+      </div>
+      <div class="stat-row">
+        <span>High</span>
+        <span id="stat-high" class="stat-val high">0</span>
+      </div>
+      <div class="stat-row">
+        <span>Medium</span>
+        <span id="stat-medium" class="stat-val medium">0</span>
+      </div>
+      <div class="stat-row">
+        <span>Low</span>
+        <span id="stat-low" class="stat-val low">0</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h1 class="page-title" id="page-title">All Tasks</h1>
+      <div class="topbar-right">
+        <input type="text" id="search" class="search-input" placeholder="Search tasks..." />
+        <select id="priority-filter" class="filter-select">
+          <option value="">All priorities</option>
+          <option value="urgent">Urgent</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <button class="btn-primary" id="openTaskModal">+ New Task</button>
+      </div>
+    </header>
+
+    <div class="kanban-board" id="kanban-board">
+      <div class="kanban-col" data-status="todo">
+        <div class="col-header">
+          <span class="col-dot todo-dot"></span>
+          <span class="col-title">TO DO</span>
+          <span class="col-count" id="col-count-todo">0</span>
+        </div>
+        <div class="task-list" id="list-todo"></div>
+      </div>
+      <div class="kanban-col" data-status="in_progress">
+        <div class="col-header">
+          <span class="col-dot inprog-dot"></span>
+          <span class="col-title">IN PROGRESS</span>
+          <span class="col-count" id="col-count-in_progress">0</span>
+        </div>
+        <div class="task-list" id="list-in_progress"></div>
+      </div>
+      <div class="kanban-col" data-status="done">
+        <div class="col-header">
+          <span class="col-dot done-dot"></span>
+          <span class="col-title">DONE</span>
+          <span class="col-count" id="col-count-done">0</span>
+        </div>
+        <div class="task-list" id="list-done"></div>
+      </div>
+    </div>
+
+    <div class="task-list-view" id="task-list-view" style="display:none;">
+      <div id="filtered-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Task Modal -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="modal-title-text">New Task</span>
+      <button class="modal-close" id="closeTaskModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="task-id" />
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="task-title" class="form-input" placeholder="What needs to be done?" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="task-desc" class="form-input form-textarea" placeholder="Add details..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Priority</label>
+          <select id="task-priority" class="form-input">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="task-status" class="form-input">
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="task-category" class="form-input">
+            <option value="">No category</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" id="task-due" class="form-input" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="cancelTask">Cancel</button>
+      <button class="btn-primary" id="saveTask">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay" id="categoryModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span>New Category</span>
+      <button class="modal-close" id="closeCategoryModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="cat-name" class="form-input" placeholder="Category name" />
+      </div>
+      <div class="form-group">
+        <label>Color</label>
+        <div class="color-options" id="color-options">
+          <button class="color-swatch active" data-color="#6366f1" style="background:#6366f1"></button>
+          <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b"></button>
+          <button class="color-swatch" data-color="#10b981" style="background:#10b981"></button>
+          <button class="color-swatch" data-color="#ef4444" style="background:#ef4444"></button>
+          <button class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+          <button class="color-swatch" data-color="#ec4899" style="background:#ec4899"></button>
+          <button class="color-swatch" data-color="#14b8a6" style="background:#14b8a6"></button>
+          <button class="color-swatch" data-color="#f97316" style="background:#f97316"></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="cancelCategory">Cancel</button>
+      <button class="btn-primary" id="saveCategory">Create</button>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
