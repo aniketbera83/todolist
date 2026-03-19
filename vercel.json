@@ -1,14 +1,15 @@
 {
   "version": 2,
-  "functions": {
-    "wsgi.py": {
-      "runtime": "@vercel/python"
-    }
-  },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/wsgi.py"
+      "src": "wsgi.py",
+      "use": "@vercel/python@4.3.1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "wsgi.py"
     }
   ]
 }
