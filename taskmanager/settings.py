@@ -5,7 +5,7 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('0xc93f4df8DCa3217cE298F9fC8b8911a91E6b95F0', default='django-insecure-dev-key-change-in-production')
+SECRET_KEY = config('this-is-my-to-do-list-project-you-know', default='django-insecure-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='.vercel.app,localhost,127.0.0.1', cast=Csv())
