@@ -6,9 +6,9 @@ from decouple import config, Csv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('this-is-my-to-do-list-project-you-know', default='django-insecure-dev-key-change-in-production')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('False', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='.vercel.app,localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('.vercel.app', default='.vercel.app,localhost,127.0.0.1', cast=Csv())
 
 INSTALLED_APPS = [
     'django.contrib.admin',
